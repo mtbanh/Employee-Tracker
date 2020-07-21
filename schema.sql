@@ -6,7 +6,7 @@ USE employees_DB;
 
 -- department table --
 
-CREATE TABLE deparment (
+CREATE TABLE department (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
@@ -20,7 +20,7 @@ CREATE TABLE role (
     salary DECIMAL NOT NULL,
     department_id INT NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (department_id) REFERENCES department_id ON DELETE CASCADE
+    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
 );
 
 -- employee table
