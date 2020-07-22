@@ -97,49 +97,53 @@ function addDept() {
     })
 }
 
-// const addRoles = () => {
-//     let deptArr = [];
-//     promisemysql.createConnection(connectionProperties).then((connection) => {
-//         return connection.query(`SELECT id, name FROM department ORDER BY name ASC`);
-//     }).then((departments) => {
-//         for (i = 0; i < deparments.length; i++) {
-//             deptArr.push(departments[i].name);
-//         }
+function addRoles(){
 
-//         return departments;
-//     }).then((departments) => {
-//         inquirer.prompt([
-//             {
-//                 type: 'input',
-//                 message: "What's the role title?",
-//                 name: 'roleTitle'
-//             },
-//             {
-//                 type: 'number',
-//                 message: "What's the salary for this role?",
-//                 name: 'roleSalary'
-//             },
-//             {
-//                 type: 'list',
-//                 message: "What's the assigned deparment id?",
-//                 name: 'roleDepartment',
-//                 choices: deptArr
-//             }
-//         ]). then((input)=>{
-//             let deptID;
-//             for(i=0; i<departments.length; i++){
-//                 if(input.roleDepartment == departments[i].name){
-//                     deptID = departments[i].id;
-//                 }
-//             }
+    let deptArr = [];
 
-//             connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${input.roleTitle}", ${input.roleSalary}, ${input.deptID})`, (err, res) =>{
-//                 if (err) return err;
-//                 console.log(`Role added`);
-//             })
-//         })
-//         mainMenuPrompt();
-//     })
+    promisemysql.createConnection(connectionProperties).then((connection) => {
+        return connection.query(`SELECT id, name FROM department ORDER BY name ASC`);
 
-// }
+    }).then((departments) => {
+        for (i = 0; i < departments.length; i++) {
+            deptArr.push(departments[i].name);
+        }
+
+        return departments;
+    }).then((departments) => {
+        inquirer.prompt([
+            {
+                type: 'input',
+                message: "What's the role title?",
+                name: 'roleTitle'
+            },
+            {
+                type: 'number',
+                message: "What's the salary for this role?",
+                name: 'roleSalary'
+            },
+            {
+                type: 'list',
+                message: "What's the assigned deparment id?",
+                name: 'roleDepartment',
+                choices: deptArr
+            }
+        ]). then((input)=>{
+            let deptID;
+
+            for(i=0; i<departments.length; i++){
+                if(input.roleDepartment == departments[i].name){
+                    deptID = departments[i].id;
+                }
+            }
+
+            connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${input.roleTitle}", ${input.roleSalary}, ${deptID})`, (err, res) =>{
+                if (err) return err;
+                console.log(`Role added`);
+                mainMenuPrompt();
+            })
+        })
+    })
+
+}
 
