@@ -219,7 +219,7 @@ function addEmp() {
         })
     })
 };
-//need to be tested once we have a seed.sql file
+//tested
 function viewDept() {
     let deptArr =[];
     promisemysql.createConnection(connectionProperties).then((connection)=>{
