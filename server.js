@@ -82,8 +82,9 @@ function mainMenuPrompt() {
     });
 };
 
+//tested 
 function addDept() {
-     inquirer.prompt({
+    inquirer.prompt({
         name: 'deptName',
         type: 'input',
         message: "What's the department name?"
@@ -95,9 +96,9 @@ function addDept() {
 
         });
     })
-}
-
-function addRoles(){
+};
+//tested
+function addRoles() {
 
     let deptArr = [];
 
@@ -128,16 +129,16 @@ function addRoles(){
                 name: 'roleDepartment',
                 choices: deptArr
             }
-        ]). then((input)=>{
+        ]).then((input) => {
             let deptID;
 
-            for(i=0; i<departments.length; i++){
-                if(input.roleDepartment == departments[i].name){
+            for (i = 0; i < departments.length; i++) {
+                if (input.roleDepartment == departments[i].name) {
                     deptID = departments[i].id;
                 }
             }
 
-            connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${input.roleTitle}", ${input.roleSalary}, ${deptID})`, (err, res) =>{
+            connection.query(`INSERT INTO role (title, salary, department_id) VALUES ("${input.roleTitle}", ${input.roleSalary}, ${deptID})`, (err, res) => {
                 if (err) return err;
                 console.log(`Role added`);
                 mainMenuPrompt();
@@ -145,5 +146,88 @@ function addRoles(){
         })
     })
 
-}
+};
+//tested
+function addEmp() {
+    let roleArr = [];
+    let managerArr = [];
 
+    promisemysql.createConnection(connectionProperties).then((connection) => {
+        return Promise.all([
+            connection.query(`SELECT id, title FROM role ORDER BY title ASC`),
+            connection.query(`SELECT employee.id, concat(employee.first_name, ' ' ,  employee.last_name) AS Employee FROM employee ORDER BY Employee ASC`)
+        ]);
+    }).then(([roles, managers]) => {
+        for (i = 0; i < roles.length; i++) {
+            roleArr.push(roles[i].title);
+        }
+
+        for (i = 0; i < managers.length; i++) {
+            managerArr.push(managers[i].Employee);
+        }
+
+        return Promise.all([roles, managers]);
+    }).then(([roles, managers]) => {
+        managerArr.unshift('--');
+
+        inquirer.prompt([
+            {
+                type: 'input',
+                message: "What's the first name?",
+                name: 'firstName'
+            },
+            {
+                type: 'input',
+                message: "last name?",
+                name: 'lastName'
+            },
+            {
+                type: 'list',
+                message: "Role?",
+                name: 'role',
+                choices: roleArr
+            },
+            {
+                type: 'list',
+                message: "Who is their manager?",
+                name: 'manager',
+                choices: managerArr
+            }
+        ]).then((input) => {
+            let roleID;
+            let managerID = null;
+
+            for (i = 0; i < roles.length; i++) {
+                if (input.role == roles[i].title) {
+                    roleID = roles[i].id;
+                }
+            }
+
+            for (i = 0; i < managers.length; i++) {
+                if (input.manager == managers[i].Employee) {
+                    managerID = managers[i].id;
+                }
+            }
+
+            connection.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                            VALUES ("${input.firstName}", "${input.lastName}", ${roleID}, ${managerID})`, (err, res) => {
+                if (err) return err;
+                console.log(`Employee added`);
+                mainMenuPrompt();
+            });
+
+        })
+    })
+};
+
+function viewDept() { }
+
+function viewRoles() { }
+
+function viewEmp() { }
+
+function updateDept() { }
+
+function updateRoles() { }
+
+function updateEmp() { }
