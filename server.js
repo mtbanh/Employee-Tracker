@@ -28,7 +28,7 @@ function mainMenuPrompt() {
         name: 'userChoice',
         type: 'list',
         message: 'What would you like to do?',
-        choices: ['Add Departments', 'Add Roles', 'Add Employees', 'View Departments', 'View Roles', 'View Employees', 'Update Departments', 'Update Roles', 'Update Employees']
+        choices: ['Add Departments', 'Add Roles', 'Add Employees', 'View Departments', 'View Roles', 'View Employees', 'Update Employee Role']
     }).then((answer) => {
         switch (answer.userChoice) {
             case "Add Departments":
@@ -55,16 +55,8 @@ function mainMenuPrompt() {
                 viewEmp();
                 break;
 
-            case "Update Departments":
-                updateDept();
-                break;
-
-            case "Update Roles":
-                updateRoles();
-                break;
-
-            case "Update Employees":
-                updateEmp();
+            case "Update Employee Role":
+                updateEmpRole();
                 break;
         }
         // if the while loop is working
@@ -298,10 +290,62 @@ function viewEmp() {
         console.table(res);
         mainMenuPrompt();
     })
- }
+ };
+//tested
+function updateEmpRole() {
+    let employeeArr =[];
+    let roleArr =[];
 
-function updateDept() { }
+    promisemysql.createConnection(connectionProperties).then((connection)=>{
+        return Promise.all([
+            connection.query(`SELECT id, title FROM role ORDER BY title ASC`),
+            connection.query(`SELECT employee.id, concat(employee.first_name, ' ', employee.last_name) AS Employee FROM Employee ORDER BY Employee ASC`)
+        ]);
+    }).then(([roles, employees]) =>{
+        for (i=0;i<roles.length; i++){
+            roleArr.push(roles[i].title);
+        };
 
-function updateRoles() { }
+        for(i=0;i<employees.length;i++){
+            employeeArr.push(employees[i].Employee);
+        }
 
-function updateEmp() { }
+        return Promise.all([roles, employees]);
+    }).then(([roles, employees])=>{
+        inquirer.prompt([
+            {
+                type: 'list',
+                message: 'Who would you like to update?',
+                choices: employeeArr,
+                name: 'employee'
+            },
+            {
+                type: 'list',
+                message: 'What is their new role?',
+                choices: roleArr,
+                name: 'role'
+            }
+        ]).then((input)=>{
+            let roleID;
+            let employeeID;
+
+            for(i=0;i<roles.length;i++){
+                if(input.role == roles[i].title){
+                    roleID = roles[i].id;
+                }
+            }
+
+            for(i=0;i<employees.length;i++){
+                if(input.employee == employees[i].Employee){
+                    employeeID = employees[i].id;
+                }
+            }
+
+            connection.query(`UPDATE employee SET role_id = ${roleID} WHERE id = ${employeeID}`, (err, res)=>{
+                if (err) return err;
+                console.log(`Employee role updated`);
+                mainMenuPrompt();
+            })
+        })
+    })
+ };
