@@ -2,7 +2,7 @@
 
 ## About the project
 
-
+This command line application allow user to manage and interact with their departments and employees data in a user-friendly interface.
 
 ---
 
@@ -17,21 +17,9 @@ Below are the prerequisite understanding and programs that were utilized :
 
 ---
 
-## Code spotlight
-
-
-```js
-{
-
-  
-}
-
-```
----
-
 ## Demo
 
-![Deployed Application](./Develop/deployed-site.gif)
+![Deployed Application](\deployed-site.gif)
 
 ---
 

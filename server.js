@@ -22,8 +22,7 @@ connection.connect((err) => {
 
 
 function mainMenuPrompt() {
-    // let wantToCont = true;
-    // while (wantToCont) {}
+
     inquirer.prompt({
         name: 'userChoice',
         type: 'list',
@@ -59,20 +58,10 @@ function mainMenuPrompt() {
                 updateEmpRole();
                 break;
         }
-        // if the while loop is working
-        //     const contEdit = inquirer.prompt({
-        //         type: 'list',
-        //         name: 'continue',
-        //         message: 'Need to do more work?',
-        //         choices: ['Yes', 'No']
-        //     })
+    
+        })
+    };
 
-        //     if (contEdit.continue === 'No') {
-        //         wantToCont = false;
-        //     }
-        // })
-    });
-};
 
 //tested 
 function addDept() {
