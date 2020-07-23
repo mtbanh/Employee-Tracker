@@ -19,7 +19,7 @@ Below are the prerequisite understanding and programs that were utilized :
 
 ## Demo
 
-![Deployed Application](\deployed-site.gif)
+![Deployed Application](deployed-site.gif)
 
 ---
 
